@@ -1,0 +1,16 @@
+{
+    "recommendations": [
+        // main extension for python
+        "ms-python.python",
+
+        // spell checking
+        "streetsidesoftware.code-spell-checker",
+
+        // those are used only for styling
+        "dunstontc.dark-plus-syntax",
+        "pkief.material-icon-theme",
+
+        // better cooperating
+        "github.vscode-pull-request-github",
+    ]
+}

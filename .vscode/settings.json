@@ -1,0 +1,17 @@
+{
+    "files.encoding": "utf8",
+    "files.autoSave": "afterDelay",
+    "files.autoSaveDelay": 4000,
+    "[json]": {
+        "editor.insertSpaces": true,
+        "editor.tabSize": 4,
+    },
+    "[pyhon]": {
+        "editor.insertSpaces": true,
+        "editor.tabSize": 4,
+    },
+    "[yaml]": {
+        "editor.insertSpaces": true,
+        "editor.tabSize": 2,
+    },
+}
