@@ -20,10 +20,10 @@ After installation is complete, you will see window with header **Setup was succ
 
 After installing Python, go to [Visual Studio Code](https://code.visualstudio.com/) and chose **Download for Your System (Stable Build)**. After the file is downloaded, run it, accept the license and select:
 
-- Add "Open with Code action to Windows Explorer file context menu 
-- Add "Open with Code action to Windows Explorer directory context menu 
-- Register Code as an editor for supported file types 
-- Add to PATH (requires shell restart) 
+- *Add "Open with Code action to Windows Explorer file context menu*
+- *Add "Open with Code action to Windows Explorer directory context menu*
+- *Register Code as an editor for supported file types*
+- *Add to PATH (requires shell restart)*
 
 Click **Next** and **Install**.
 
@@ -63,7 +63,7 @@ git clone https://github.com/Soft-Eng-AEII-G1-2020/project
 
 ## Commit messages
 
-To keep things clean and readable, follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) rules. for most of the time, your commit messages will look like this:
+To keep things clean and readable, follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) rules. For most of the time, your commit messages will look like this:
 
 ```
 fix(converter): conversion from string to int was broken
