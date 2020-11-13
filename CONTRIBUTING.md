@@ -29,7 +29,7 @@ Click **Next** and **Install**.
 
 ## Git 
 
-when previous steps are completed, proceed with Git installation. Go to [Git](https://git-scm.com/downloads) and download Git client for your Operating System. On windows, during installation select components:
+When previous steps are completed, proceed with Git installation. Go to [Git](https://git-scm.com/downloads) and download Git client for your Operating System. On windows, during installation select components:
 
 - *Windows Explorer Integration*
     - *Git Bash Here*
