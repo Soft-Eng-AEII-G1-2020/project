@@ -82,7 +82,7 @@ class Window(QMainWindow):
             "Select a binary file",
             "",
             "Binary file (*.bin)")
-        if fileName[0] != "": 
+        if fileName[0] != "":
             with open(fileName[0], "rb") as binary_file:
                 data = binary_file.read()
             stringFromData = ' '.join('{:02X}'.format(c) for c in data)
