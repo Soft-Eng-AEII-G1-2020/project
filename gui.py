@@ -15,7 +15,7 @@ class Window(QMainWindow):
         self.w = QWidget()
         self.vb = QVBoxLayout()
 
-        self.setMenu()
+        self.setMenu() 
         self.setGui()
         self.bindButtons()
         self.vb.addLayout(self.gridTop)
@@ -59,7 +59,7 @@ class Window(QMainWindow):
             self.gridTop.itemAt(i).widget().setParent(None)
         self.gridTop.addWidget(self.btnReset, 0, 0)
         self.gridTop.addWidget(self.btnConvert, 0, 1)
-
+    
     def step3Buttons(self):
         for i in reversed(range(self.grid.count())):
             self.gridTop.itemAt(i).widget().setParent(None)
@@ -79,14 +79,14 @@ class Window(QMainWindow):
     def openAFile(self):
         fileName = QFileDialog.getOpenFileName(
             self.w, "Select a binary file", "Initial file name", "text file (*.txt)")
-        fileIn = open(fileName, "r")
+        fileIn = open(fileName[0], "r")
         self.inText.setPlainText(fileIn.read())
         self.step2Buttons()
 
     def saveAFile(self):
         fileName = QFileDialog.getSaveFileName(
             self.w, "Select a text file", "", "text file (*.txt)")
-        fileOut = open(fileName, "w+")
+        fileOut = open(fileName[0], "w+")
         fileOut.write(self.outText.toPlainText())
 
 
