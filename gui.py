@@ -80,11 +80,13 @@ class Window(QMainWindow):
         fileName = QFileDialog.getOpenFileName(
             self.w,
             "Select a binary file",
-            "Initial file name",
-            "text file (*.txt)")
-        if fileName[0] != "":
-            fileIn = open(fileName[0], "r")
-            self.inText.setPlainText(fileIn.read())
+            "",
+            "Binary file (*.bin)")
+        if fileName[0] != "": 
+            with open(fileName[0], "rb") as binary_file:
+                data = binary_file.read()
+            stringFromData = ' '.join('{:02X}'.format(c) for c in data)
+            self.inText.setPlainText(stringFromData)
             self.step2Buttons()
 
     def saveAFile(self):
@@ -96,6 +98,7 @@ class Window(QMainWindow):
 
 
 app = QApplication([])
+app.setStyle('Fusion')
 win = Window()
 win.show()
 app.exec_()
