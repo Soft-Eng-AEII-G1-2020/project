@@ -1,6 +1,7 @@
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import QMainWindow, QGridLayout, QWidget, QVBoxLayout, QShortcut, QPlainTextEdit, QPushButton, QFileDialog, QApplication
 
+
 class Window(QMainWindow):
 
     def __init__(self, parent=None):
