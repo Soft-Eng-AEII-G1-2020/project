@@ -91,9 +91,9 @@ class Window(QMainWindow):
 
     def saveAFile(self):
         fileName = QFileDialog.getSaveFileName(
-            self.w, 
-            "Select a text file", 
-            "", 
+            self.w,
+            "Select a text file",
+            "",
             "Text file (*.txt);; All files (*.*)")
         if fileName[0]:
             fileOut = open(fileName[0], "w+")
