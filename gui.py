@@ -82,15 +82,17 @@ class Window(QMainWindow):
             "Select a binary file",
             "Initial file name",
             "text file (*.txt)")
-        fileIn = open(fileName[0], "r")
-        self.inText.setPlainText(fileIn.read())
-        self.step2Buttons()
+        if fileName[0] != "":
+            fileIn = open(fileName[0], "r")
+            self.inText.setPlainText(fileIn.read())
+            self.step2Buttons()
 
     def saveAFile(self):
         fileName = QFileDialog.getSaveFileName(
             self.w, "Select a text file", "", "text file (*.txt)")
-        fileOut = open(fileName[0], "w+")
-        fileOut.write(self.outText.toPlainText())
+        if fileName[0]:
+            fileOut = open(fileName[0], "w+")
+            fileOut.write(self.outText.toPlainText())
 
 
 app = QApplication([])
