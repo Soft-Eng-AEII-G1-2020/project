@@ -81,7 +81,7 @@ class Window(QMainWindow):
             self.w,
             "Select a binary file",
             "",
-            "Binary file (*.bin)")
+            "Binary file (*.bin);; All files (*.*)")
         if fileName[0] != "":
             with open(fileName[0], "rb") as binary_file:
                 data = binary_file.read()
@@ -91,7 +91,10 @@ class Window(QMainWindow):
 
     def saveAFile(self):
         fileName = QFileDialog.getSaveFileName(
-            self.w, "Select a text file", "", "text file (*.txt)")
+            self.w, 
+            "Select a text file", 
+            "", 
+            "Text file (*.txt);; All files (*.*)")
         if fileName[0]:
             fileOut = open(fileName[0], "w+")
             fileOut.write(self.outText.toPlainText())
