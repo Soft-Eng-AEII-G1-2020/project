@@ -27,6 +27,8 @@ class Window(QMainWindow):
         self.setFixedWidth(500)
         self.setFixedHeight(500)
 
+        self.binfile = file_management.BinFile()
+
     def setMenu(self):
         self.menu = self.menuBar()
         self.fileMenu = self.menu.addMenu("Menu")
@@ -84,8 +86,11 @@ class Window(QMainWindow):
             "",
             "Binary file (*.bin);; All files (*.*)")
         if fileName[0] != "":
-            with open(fileName[0], "rb") as binary_file:
-                data = binary_file.read()
+            self.binfile.load_file(fileName[0])
+            file = self.binfile.next_read()
+            data = file.read()
+            #with open(fileName[0], "rb") as binary_file:
+            #    data = binary_file.read()
             stringFromData = ' '.join('{:02X}'.format(c) for c in data)
             self.inText.setPlainText(stringFromData)
             self.step2Buttons()
@@ -97,7 +102,7 @@ class Window(QMainWindow):
             "",
             "Text file (*.txt);; All files (*.*)")
         if fileName[0]:
-            fileOut = open(fileName[0], "w+")
+            fileOut = self.binfile.next_write(fileName[0], True)
             fileOut.write(self.outText.toPlainText())
 
 
