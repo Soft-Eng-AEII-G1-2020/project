@@ -9,9 +9,9 @@ class BinFile:
         self.iterator = 0
     
     # Clears the list and reverts the iterator back to 0
-    def __reset(self):
+    def reset(self):
         for f in self.readList:
-            f.close()
+            f[1].close()
         for f in self.writeList:
             f.close()
         self.readList.clear()
@@ -27,16 +27,19 @@ class BinFile:
     # Loads a single file and saves its filename and handle into a list.
     def load_file(self, path):
         handle = open(path, "rb")
-        self.__reset()
+        self.reset()
         self.readList.append(self.__create_tuple(handle))
     
     # Loads all files within a folder 
     def load_folder(self, path):
-        (_, _, filenames) = next(os.walk(path))
-        self.__reset()
+        filenames = []
+        for _p, _d, f in os.walk(path):
+            filenames.append(f)
+        filenames = filenames[0]
+        self.reset()
         filedirs = []
         for fn in filenames:
-            filedirs.append(os.path.join(path, fn))
+            filedirs.append(path + "/" + fn)
         for fd in filedirs:
             handle = open(fd, "rb")
             self.readList.append(self.__create_tuple(handle))
@@ -55,16 +58,22 @@ class BinFile:
     
     def next_write(self, path, override_filename=False):
         directory, filename = os.path.split(path)
-        filename = os.path.splitext(filename)[0] #remove .txt
+        filename = os.path.splitext(filename) #make a list [0] - filename, [1] - file extension
         if self.iterator-1 == len(self.writeList):
             if(override_filename==False):
-                file = open(directory + "/" + self.readList[self.iterator-1][0] + ".txt", "w+")
+                file = open(directory + "/" + self.readList[self.iterator-1][0] + filename[1], "w+")
             else:
                 if(len(self.readList) == 1):
-                    file = open(directory + ("/%s.txt" % (filename)), "w+")
+                    file = open(directory + ("/%s%s" % (filename[0],filename[1])), "w+")
                 else:
-                    file = open(directory + ("/%s_%04i.txt" % (filename, self.iterator-1)), "w+")
+                    file = open(directory + ("/%s_%04i%s" % (filename[0], self.iterator-1, filename[1])), "w+")
             self.writeList.append(file)
             return file
         else:
             raise Exception("Called next_write() without calling next_read() first")
+    
+    def is_single_file(self):
+        if len(self.readList) == 1:
+            return True
+        else:
+            return False

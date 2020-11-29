@@ -71,9 +71,10 @@ class Window(QMainWindow):
 
     def bindButtons(self):
         self.btnReset.clicked.connect(self.step1Buttons)
-        self.btnSave.clicked.connect(self.saveAFile)
+        self.btnSave.clicked.connect(self.saveManyFiles)
         self.btnConvert.clicked.connect(self.startProcesing)
         self.btnOne.clicked.connect(self.openAFile)
+        self.btnMany.clicked.connect(self.openManyFiles)
 
     def startProcesing(self):
         self.step3Buttons()
@@ -94,6 +95,19 @@ class Window(QMainWindow):
             stringFromData = ' '.join('{:02X}'.format(c) for c in data)
             self.inText.setPlainText(stringFromData)
             self.step2Buttons()
+    
+    def openManyFiles(self):
+        dirName = QFileDialog.getExistingDirectory(
+            self.w,
+            "Select Directory",
+        )
+        if dirName != "":
+            self.binfile.load_folder(dirName)
+            file = self.binfile.next_read()
+            data = file.read()
+            stringFromData = ' '.join('{:02X}'.format(c) for c in data)
+            self.inText.setPlainText(stringFromData)
+            self.step2Buttons()
 
     def saveAFile(self):
         fileName = QFileDialog.getSaveFileName(
@@ -104,6 +118,39 @@ class Window(QMainWindow):
         if fileName[0]:
             fileOut = self.binfile.next_write(fileName[0], True)
             fileOut.write(self.outText.toPlainText())
+        self.binfile.reset()
+        self.step1Buttons()
+    
+    def saveManyFiles(self):
+        #go to single file saving mode if there's just one file
+        if self.binfile.is_single_file():
+            self.saveAFile()
+            return
+        #select directory
+        fileName = QFileDialog.getSaveFileName(
+            self.w,
+            "Select a name for your text files",
+            "",
+            "Text file (*.txt);; All files (*.*)"
+        )
+        if fileName:
+            #finish the file that the user got to view
+            fileOut = self.binfile.next_write(fileName[0], True)
+            fileOut.write(self.outText.toPlainText())
+            #save the rest of the files
+            while(True):
+                file = self.binfile.next_read()
+                if(file == -1):
+                    break
+                data = file.read()
+                stringFromData = ' '.join('{:02X}'.format(c) for c in data)
+                fileOut = self.binfile.next_write(fileName[0], True)
+                fileOut.write(stringFromData)
+            #reset the file manager
+            self.binfile.reset()
+            self.step1Buttons()
+
+
 
 
 app = QApplication([])
