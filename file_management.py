@@ -82,12 +82,15 @@ class BinFile:
             raise Exception(
                 "Called next_write() without calling next_read() first")
 
-    # Saves file to supplied path, based on the name of the read file (or if requested, a custom filename) with given content.
+    # Saves file to supplied path, based on the name of the read file (or if
+    # requested, a custom filename) with given content.
     def save_file_by_index(self, path, index, content, filename_override=""):
-        if filename_override=="":
-            actualPath = os.path.split(path)[0] + "/" + self.readList[index][0] + "_output.txt"
+        if filename_override == "":
+            actualPath = os.path.split(
+                path)[0] + "/" + self.readList[index][0] + "_output.txt"
         else:
-            actualPath = os.path.split(path)[0] + "/" + filename_override + ".txt"
+            actualPath = os.path.split(
+                path)[0] + "/" + filename_override + ".txt"
         file = open(actualPath, "w")
         file.write(content)
         file.close()
@@ -98,15 +101,22 @@ class BinFile:
         if (index < len(self.readList)):
             return self.readList[index][2]
         else:
-            raise Exception("get_read_file_name_by_index(" + str(index) + "): Index out of bounds")
-    
-    # Get contents of a file selected by index. I think it's in string format, might be wrong about that though
+            raise Exception(
+                "get_read_file_name_by_index(" +
+                str(index) +
+                "): Index out of bounds")
+
+    # Get contents of a file selected by index. I think it's in string format,
+    # might be wrong about that though
     def get_read_file_content_by_index(self, index):
         if (index < len(self.readList)):
             file = self.readList[index][1]
             return file.read()
         else:
-            raise Exception("get_read_file_content_by_index(" + str(index) + "): Index out of bounds")
+            raise Exception(
+                "get_read_file_content_by_index(" +
+                str(index) +
+                "): Index out of bounds")
 
     # Get number of files selected by the user
     def get_file_count(self):
