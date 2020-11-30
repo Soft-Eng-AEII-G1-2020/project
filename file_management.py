@@ -83,6 +83,16 @@ class BinFile:
             raise Exception(
                 "Called next_write() without calling next_read() first")
 
+    # Saves file to supplied path, based on the name of the read file (or if requested, a custom filename) with given content.
+    def save_file_by_index(self, path, index, content, filename_override=""):
+        if filename_override=="":
+            actualPath = os.path.split(path)[0] + self.readList[index][0] + "_output.txt"
+        else:
+            actualPath = os.path.split(path)[0] + filename_override + ".txt"
+        file = open(actualPath)
+        file.write(content)
+        file.close()
+
     # Get a file name in string format. It contains the extension (ie ".txt",
     # ".bin")
     def get_read_file_name_by_index(self, index):
