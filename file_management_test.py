@@ -24,15 +24,16 @@ def test_load_files():
     matrix = ['fontawesome-webfont', 'OpenSans-Regular']
 
     for i in range(0, 2):
-        assert bf.readList[i][2] == matrix[i]+'.bin'
+        assert bf.readList[i][2] == matrix[i] + '.bin'
         assert bf.readList[i][0] == matrix[i]
+
 
 def is_single_file_test():
     bf = fm.BinFile()
 
     bf.load_file('./exemplaryFiles/fontawesome-webfont.bin')
 
-    assert bf.is_single_file() == True
+    assert bf.is_single_file()
 
     bf.load_folder('./exemplaryFiles/')
 
