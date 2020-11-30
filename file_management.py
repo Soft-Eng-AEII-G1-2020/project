@@ -89,7 +89,15 @@ class BinFile:
         if (index < len(self.readList)):
             return self.readList[index][2]
         else:
-            raise Exception("Index out of bounds")
+            raise Exception("get_read_file_name_by_index(" + str(index) + "): Index out of bounds")
+    
+    # Get contents of a file selected by index. I think it's in string format, might be wrong about that though
+    def get_read_file_content_by_index(self, index):
+        if (index < len(self.readList)):
+            file = self.readList[index][1]
+            return file.read()
+        else:
+            raise Exception("get_read_file_content_by_index(" + str(index) + "): Index out of bounds")
 
     # Get number of files selected by the user
     def get_file_count(self):
