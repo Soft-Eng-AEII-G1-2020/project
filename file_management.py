@@ -21,8 +21,8 @@ class BinFile:
     # Extracts file's name and returns it alongside the file handle in a tuple
     def __create_tuple(self, file_handle):
         filename = os.path.basename(file_handle.name)
-        filename = os.path.splitext(filename)[0] #remove extension
-        return (filename,file_handle)
+        filename_no_ext = os.path.splitext(filename)[0] #remove extension
+        return (filename_no_ext,file_handle,filename)
 
     # Loads a single file and saves its filename and handle into a list.
     def load_file(self, path):
@@ -43,6 +43,7 @@ class BinFile:
         for fd in filedirs:
             handle = open(fd, "rb")
             self.readList.append(self.__create_tuple(handle))
+        print(self.readList)
     
     # Each call returns a file handle from the list in order. When there's no more to return, returns -1
     # After each next_read() call, there should be a next_write() call to save changes appropriately
@@ -71,6 +72,15 @@ class BinFile:
             return file
         else:
             raise Exception("Called next_write() without calling next_read() first")
+    
+    def get_read_file_name_by_index(self, index):
+        if (index < len(self.readList)):
+            return self.readList[index][2]
+        else:
+            raise Exception("Index out of bounds")
+    
+    def get_file_count(self):
+        return len(self.readList)
     
     def is_single_file(self):
         if len(self.readList) == 1:
