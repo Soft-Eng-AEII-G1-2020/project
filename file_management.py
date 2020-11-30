@@ -10,7 +10,7 @@ class BinFile:
         self.readList = []
         self.writeList = []
 
-    # Clears the list and reverts the iterator back to 0
+    # Clears the list of files and closes all files
     def reset(self):
         for f in self.readList:
             f[1].close()
@@ -85,6 +85,7 @@ class BinFile:
     def get_file_count(self):
         return len(self.readList)
 
+    # Returns True if and only if there's just one file selected by the user
     def is_single_file(self):
         if len(self.readList) == 1:
             return True
