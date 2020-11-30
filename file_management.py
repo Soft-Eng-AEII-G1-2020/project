@@ -73,12 +73,14 @@ class BinFile:
         else:
             raise Exception("Called next_write() without calling next_read() first")
     
+    # Get a file name in string format. It contains the extension (ie ".txt", ".bin")
     def get_read_file_name_by_index(self, index):
         if (index < len(self.readList)):
             return self.readList[index][2]
         else:
             raise Exception("Index out of bounds")
     
+    # Get number of files selected by the user
     def get_file_count(self):
         return len(self.readList)
     
