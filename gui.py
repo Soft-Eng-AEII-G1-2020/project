@@ -158,6 +158,7 @@ class Window(QMainWindow):
         count = self.binfile.get_file_count()
         for i in range(count):
             text = self.binfile.get_read_file_content_by_index(i)
+            text = ' '.join('{:02X}'.format(c) for c in text)
             self.tableOfOuts.append(self.convertFromBinary(text))
         self.setItemList(count, 0)
         self.step3ButtonsAll()
@@ -211,7 +212,7 @@ class Window(QMainWindow):
             "",
             "Text file (*.txt);; All files (*.*)"
         )
-        if fileName:
+        if fileName[0]:
             count = len(self.tableOfOuts)
             for i in range(count):
                 text = self.tableOfOuts[i]
@@ -222,8 +223,7 @@ class Window(QMainWindow):
             self.step1Buttons()
 
     def convertFromBinary(self, data):
-        # todo magic
-        data = ' '.join('{:02X}'.format(c) for c in data)
+
         return data
 
 

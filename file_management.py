@@ -10,7 +10,7 @@ class BinFile:
         self.readList = []
         self.writeList = []
 
-    # Clears the list and reverts the iterator back to 0
+    # Clears the list of files and closes all files
     def reset(self):
         for f in self.readList:
             f[1].close()
@@ -44,6 +44,7 @@ class BinFile:
         for fd in filedirs:
             handle = open(fd, "rb")
             self.readList.append(self.__create_tuple(handle))
+        self.readList.sort(key=lambda x: x[2])
 
     # Saves file to supplied path, based on the name of the read file (or if
     # requested, a custom filename) with given content.
@@ -85,6 +86,7 @@ class BinFile:
     def get_file_count(self):
         return len(self.readList)
 
+    # Returns True if and only if there's just one file selected by the user
     def is_single_file(self):
         if len(self.readList) == 1:
             return True
