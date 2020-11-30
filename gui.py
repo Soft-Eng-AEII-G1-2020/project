@@ -90,12 +90,12 @@ class Window(QMainWindow):
             self.binfile.load_file(fileName[0])
             file = self.binfile.next_read()
             data = file.read()
-            #with open(fileName[0], "rb") as binary_file:
+            # with open(fileName[0], "rb") as binary_file:
             #    data = binary_file.read()
             stringFromData = ' '.join('{:02X}'.format(c) for c in data)
             self.inText.setPlainText(stringFromData)
             self.step2Buttons()
-    
+
     def openManyFiles(self):
         dirName = QFileDialog.getExistingDirectory(
             self.w,
@@ -120,13 +120,13 @@ class Window(QMainWindow):
             fileOut.write(self.outText.toPlainText())
         self.binfile.reset()
         self.step1Buttons()
-    
+
     def saveManyFiles(self):
-        #go to single file saving mode if there's just one file
+        # go to single file saving mode if there's just one file
         if self.binfile.is_single_file():
             self.saveAFile()
             return
-        #select directory
+        # select directory
         fileName = QFileDialog.getSaveFileName(
             self.w,
             "Select a name for your text files",
@@ -134,10 +134,10 @@ class Window(QMainWindow):
             "Text file (*.txt);; All files (*.*)"
         )
         if fileName:
-            #finish the file that the user got to view
+            # finish the file that the user got to view
             fileOut = self.binfile.next_write(fileName[0], True)
             fileOut.write(self.outText.toPlainText())
-            #save the rest of the files
+            # save the rest of the files
             while(True):
                 file = self.binfile.next_read()
                 if(file == -1):
@@ -146,11 +146,9 @@ class Window(QMainWindow):
                 stringFromData = ' '.join('{:02X}'.format(c) for c in data)
                 fileOut = self.binfile.next_write(fileName[0], True)
                 fileOut.write(stringFromData)
-            #reset the file manager
+            # reset the file manager
             self.binfile.reset()
             self.step1Buttons()
-
-
 
 
 app = QApplication([])
