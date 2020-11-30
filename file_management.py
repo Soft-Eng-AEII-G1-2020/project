@@ -46,7 +46,6 @@ class BinFile:
         for fd in filedirs:
             handle = open(fd, "rb")
             self.readList.append(self.__create_tuple(handle))
-        print(self.readList)
 
     # Each call returns a file handle from the list in order. When there's no more to return, returns -1
     # After each next_read() call, there should be a next_write() call to save
@@ -86,9 +85,9 @@ class BinFile:
     # Saves file to supplied path, based on the name of the read file (or if requested, a custom filename) with given content.
     def save_file_by_index(self, path, index, content, filename_override=""):
         if filename_override=="":
-            actualPath = os.path.split(path)[0] + self.readList[index][0] + "_output.txt"
+            actualPath = os.path.split(path)[0] + "/" + self.readList[index][0] + "_output.txt"
         else:
-            actualPath = os.path.split(path)[0] + filename_override + ".txt"
+            actualPath = os.path.split(path)[0] + "/" + filename_override + ".txt"
         file = open(actualPath, "w")
         file.write(content)
         file.close()
