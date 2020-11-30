@@ -44,6 +44,7 @@ class BinFile:
         for fd in filedirs:
             handle = open(fd, "rb")
             self.readList.append(self.__create_tuple(handle))
+        self.readList.sort(key=lambda x: x[2], reverse=True)
 
     # Saves file to supplied path, based on the name of the read file (or if
     # requested, a custom filename) with given content.
