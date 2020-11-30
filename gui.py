@@ -55,7 +55,7 @@ class Window(QMainWindow):
         for i in reversed(range(self.grid.count())):
             if(self.grid.itemAt(i).widget()):
                 self.grid.itemAt(i).widget().setParent(None)
-            else: 
+            else:
                 for j in reversed(range(self.grid.itemAt(i).layout().count())):
                     self.grid.itemAt(i).itemAt(j).widget().setParent(None)
                 self.grid.itemAt(i).layout().setParent(None)
@@ -66,7 +66,7 @@ class Window(QMainWindow):
         for i in reversed(range(self.grid.count())):
             if(self.grid.itemAt(i).widget()):
                 self.grid.itemAt(i).widget().setParent(None)
-            else: 
+            else:
                 for j in reversed(range(self.grid.itemAt(i).layout().count())):
                     self.grid.itemAt(i).itemAt(j).widget().setParent(None)
                 self.grid.itemAt(i).layout().setParent(None)
@@ -144,7 +144,7 @@ class Window(QMainWindow):
         self.inText.setPlainText(text)
         self.setTextareas()
         self.step2Buttons()
-        
+
     def convAFile(self, i):
         self.openAFileFromMany(i)
         self.startProcesing()
@@ -153,14 +153,14 @@ class Window(QMainWindow):
         text = self.tableOfOuts[i]
         self.outText.setPlainText(text)
         self.saveAFile()
-    
+
     def startProcesingMany(self):
         count = self.binfile.get_file_count()
         for i in range(count):
             text = self.binfile.get_read_file_content_by_index(i)
             text = ' '.join('{:02X}'.format(c) for c in text)
             self.tableOfOuts.append(self.convertFromBinary(text))
-        self.setItemList(count,0)
+        self.setItemList(count, 0)
         self.step3ButtonsAll()
 
     def openAFile(self):
@@ -185,8 +185,7 @@ class Window(QMainWindow):
             self.binfile.load_folder(dirName)
             self.step2ButtonsMany()
             count = self.binfile.get_file_count()
-            self.setItemList(count,1)
-            
+            self.setItemList(count, 1)
 
     def saveAFile(self):
         fileName = QFileDialog.getSaveFileName(
@@ -217,7 +216,7 @@ class Window(QMainWindow):
             count = len(self.tableOfOuts)
             for i in range(count):
                 text = self.tableOfOuts[i]
-                self.binfile.save_file_by_index(fileName[0],i,text)
+                self.binfile.save_file_by_index(fileName[0], i, text)
             # reset the file manager
             self.binfile.reset()
             self.tableOfOuts = []
@@ -226,6 +225,7 @@ class Window(QMainWindow):
     def convertFromBinary(self, data):
 
         return data
+
 
 app = QApplication([])
 app.setStyle('Fusion')
