@@ -89,7 +89,7 @@ class BinFile:
             actualPath = os.path.split(path)[0] + self.readList[index][0] + "_output.txt"
         else:
             actualPath = os.path.split(path)[0] + filename_override + ".txt"
-        file = open(actualPath)
+        file = open(actualPath, "w")
         file.write(content)
         file.close()
 
