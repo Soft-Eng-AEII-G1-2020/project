@@ -9,7 +9,6 @@ class BinFile:
     def __init__(self):
         self.readList = []
         self.writeList = []
-        self.iterator = 0
 
     # Clears the list and reverts the iterator back to 0
     def reset(self):
@@ -19,7 +18,6 @@ class BinFile:
             f.close()
         self.readList.clear()
         self.writeList.clear()
-        self.iterator = 0
 
     # Extracts file's name and returns it alongside the file handle in a tuple
     def __create_tuple(self, file_handle):
@@ -46,41 +44,6 @@ class BinFile:
         for fd in filedirs:
             handle = open(fd, "rb")
             self.readList.append(self.__create_tuple(handle))
-
-    # Each call returns a file handle from the list in order. When there's no more to return, returns -1
-    # After each next_read() call, there should be a next_write() call to save
-    # changes appropriately
-    def next_read(self):
-        if self.iterator == len(self.writeList):
-            if self.iterator != len(self.readList):
-                self.iterator += 1
-                return self.readList[self.iterator - 1][1]
-            else:
-                return -1
-        else:
-            raise Exception(
-                "Every next_read() should be followed by a next_write() before calling next_read() again.")
-
-    def next_write(self, path, override_filename=False):
-        directory, filename = os.path.split(path)
-        # make a list [0] - filename, [1] - file extension
-        filename = os.path.splitext(filename)
-        if self.iterator - 1 == len(self.writeList):
-            if(override_filename == False):
-                file = open(
-                    directory + "/" + self.readList[self.iterator - 1][0] + filename[1], "w+")
-            else:
-                if(len(self.readList) == 1):
-                    file = open(directory + ("/%s%s" %
-                                             (filename[0], filename[1])), "w+")
-                else:
-                    file = open(directory + ("/%s_%04i%s" %
-                                             (filename[0], self.iterator - 1, filename[1])), "w+")
-            self.writeList.append(file)
-            return file
-        else:
-            raise Exception(
-                "Called next_write() without calling next_read() first")
 
     # Saves file to supplied path, based on the name of the read file (or if
     # requested, a custom filename) with given content.
