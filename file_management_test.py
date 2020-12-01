@@ -21,8 +21,7 @@ def test_load_folder():
 
     assert len(bf.readList) == 2
 
-    matrix = ['fontawesome-webfont', 'OpenSans-Regular']
-    matrix.sort()
+    matrix = sorted(['fontawesome-webfont', 'OpenSans-Regular'])
 
     for i in range(0, 2):
         assert bf.readList[i][2] == matrix[i] + '.bin'
