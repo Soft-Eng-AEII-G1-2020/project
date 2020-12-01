@@ -227,8 +227,9 @@ class Window(QMainWindow):
         return data
 
 
-app = QApplication([])
-app.setStyle('Fusion')
-win = Window()
-win.show()
-app.exec_()
+if __name__ == "__main__":
+    app = QApplication([])
+    app.setStyle('Fusion')
+    win = Window()
+    win.show()
+    app.exec_()
