@@ -170,11 +170,6 @@ class Window(QMainWindow):
         self.setTextareas()
         self.startProcesing()
 
-    def saveAFileFromMany(self, i):
-        text = self.tableOfOuts[i]
-        self.outText.setPlainText(text)
-        self.saveAFile()
-
     def startProcesingMany(self):
         self.resetGrid()
         self.scrollArea = QScrollArea()
@@ -225,6 +220,11 @@ class Window(QMainWindow):
             count = self.binfile.get_file_count()
             self.setItemList(count, 1)
 
+    def saveAFileFromMany(self, i):
+        text = self.tableOfOuts[i]
+        self.outText.setPlainText(text)
+        self.saveAFile()
+
     def saveAFile(self):
         fileName = QFileDialog.getSaveFileName(
             self.w,
@@ -232,7 +232,7 @@ class Window(QMainWindow):
             "",
             "Text file (*.txt);; All files (*.*)")
         if fileName[0]:
-            file = open(fileName[0], "w")
+            file = open(fileName[0], "w", encoding="utf-8")
             file.write(self.outText.toPlainText())
             file.close()
         self.binfile.reset()
@@ -247,7 +247,7 @@ class Window(QMainWindow):
         fileName = QFileDialog.getSaveFileName(
             self.w,
             "Select a name for your text files",
-            "",
+            "Find a directory",
             "Text file (*.txt);; All files (*.*)"
         )
         if fileName[0]:
