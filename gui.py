@@ -164,7 +164,10 @@ class Window(QMainWindow):
         self.step2Buttons()
 
     def convAFile(self, i):
-        self.openAFileFromMany(i)
+        text = self.binfile.get_read_file_content_by_index(i)
+        text = ' '.join('{:02X}'.format(c) for c in text)
+        self.inText.setPlainText(text)
+        self.setTextareas()
         self.startProcesing()
 
     def saveAFileFromMany(self, i):
