@@ -69,14 +69,15 @@ class Window(QMainWindow):
         self.grid.addWidget(self.outText, 0, 1)
 
     def addConvertedRow(self, i):
-        hb = QGridLayout()
+        hb = QHBoxLayout()
         label = QLabel()
         text = self.binfile.get_read_file_name_by_index(i)
         label.setText(text)
-        hb.addWidget(label, 0, 0, 1, 2)
+        label.setFixedWidth(260)
+        hb.addWidget(label)
         saveMe = QPushButton("Save")
         saveMe.clicked.connect(lambda: self.saveAFileFromMany(i))
-        hb.addWidget(saveMe, 0, 2, 1, 2)
+        hb.addWidget(saveMe)
         self.myGrid.addLayout(hb)
 
     def setItemList(self, count, isInFile):
@@ -84,19 +85,21 @@ class Window(QMainWindow):
         self.scrollArea = QScrollArea()
         self.myGrid = QVBoxLayout()
         self.scrollWidget = QWidget()
+        self.scrollWidget.setFixedWidth(460)
         for i in range(count):
             if(isInFile):
-                hb = QGridLayout()
+                hb = QHBoxLayout()
                 label = QLabel()
                 text = self.binfile.get_read_file_name_by_index(i)
                 label.setText(text)
-                hb.addWidget(label, 0, 0, 1, 2)
+                label.setFixedWidth(260)
+                hb.addWidget(label)
                 openMe = QPushButton("Open")
                 convMe = QPushButton("Convert")
                 openMe.clicked.connect(lambda: self.openAFileFromMany(i))
                 convMe.clicked.connect(lambda: self.convAFile(i))
-                hb.addWidget(openMe, 0, 2)
-                hb.addWidget(convMe, 0, 3)
+                hb.addWidget(openMe)
+                hb.addWidget(convMe)
                 self.myGrid.addLayout(hb)
             else:
                 self.addConvertedRow(i)
@@ -155,46 +158,42 @@ class Window(QMainWindow):
 
     def openAFileFromMany(self, i):
         text = self.binfile.get_read_file_content_by_index(i)
-        text
         text = ' '.join('{:02X}'.format(c) for c in text)
         self.inText.setPlainText(text)
         self.setTextareas()
         self.step2Buttons()
 
     def convAFile(self, i):
-        self.openAFileFromMany(i)
+        text = self.binfile.get_read_file_content_by_index(i)
+        text = ' '.join('{:02X}'.format(c) for c in text)
+        self.inText.setPlainText(text)
+        self.setTextareas()
         self.startProcesing()
-
-    def saveAFileFromMany(self, i):
-        text = self.tableOfOuts[i]
-        self.outText.setPlainText(text)
-        self.saveAFile()
 
     def startProcesingMany(self):
         self.resetGrid()
         self.scrollArea = QScrollArea()
         self.myGrid = QVBoxLayout()
         self.scrollWidget = QWidget()
+        self.scrollWidget.setFixedWidth(460)
         count = self.binfile.get_file_count()
         self.step3ButtonsAll()
 
         self.scrollWidget.setLayout(self.myGrid)
         self.grid.addWidget(self.scrollArea, 0, 0)
 
-        self.functionTest(count)
+        self.convertEachFile(count)
+        self.myGrid.addStretch()
         self.scrollArea.setWidget(self.scrollWidget)
 
-    def functionTest(self, count):
+    def convertEachFile(self, count):
         for i in range(count):
-            self.convertEachFile(i)
-
-    def convertEachFile(self, i):
-        text = self.binfile.get_read_file_content_by_index(i)
-        text = ' '.join('{:02X}'.format(c) for c in text)
-        text = text.encode('ascii').decode('unicode-escape')
-        out = self.convertFromBinary(text)
-        self.tableOfOuts.append(out)
-        self.addConvertedRow(i)
+            text = self.binfile.get_read_file_content_by_index(i)
+            text = ' '.join('{:02X}'.format(c) for c in text)
+            text = text.encode('ascii').decode('unicode-escape')
+            out = self.convertFromBinary(text)
+            self.tableOfOuts.append(out)
+            self.addConvertedRow(i)
 
     def openAFile(self):
         fileName = QFileDialog.getOpenFileName(
@@ -220,6 +219,11 @@ class Window(QMainWindow):
             count = self.binfile.get_file_count()
             self.setItemList(count, 1)
 
+    def saveAFileFromMany(self, i):
+        text = self.tableOfOuts[i]
+        self.outText.setPlainText(text)
+        self.saveAFile()
+
     def saveAFile(self):
         fileName = QFileDialog.getSaveFileName(
             self.w,
@@ -227,7 +231,7 @@ class Window(QMainWindow):
             "",
             "Text file (*.txt);; All files (*.*)")
         if fileName[0]:
-            file = open(fileName[0], "w")
+            file = open(fileName[0], "w", encoding="utf-8")
             file.write(self.outText.toPlainText())
             file.close()
         self.binfile.reset()
@@ -242,7 +246,7 @@ class Window(QMainWindow):
         fileName = QFileDialog.getSaveFileName(
             self.w,
             "Select a name for your text files",
-            "Select directory",
+            "Find a directory",
             "Text file (*.txt);; All files (*.*)"
         )
         if fileName[0]:
