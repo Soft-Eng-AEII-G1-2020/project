@@ -7,13 +7,14 @@ class BinConverter:
 
     # Splits the supplied string into byte-long chunks
     def __prepare_input_data(self, data):
-        self.byte_count = round(len(data)/3)
-    
+        self.byte_count = round(len(data) / 3)
+
     # Converts input binary data to output text
     def __process_data(self, data):
         self.text_output = ""
         for i in range(self.byte_count):
-            self.text_output = self.text_output + chr(int(data[(i*3):(i*3)+2], base=16))
+            self.text_output = self.text_output + \
+                chr(int(data[(i * 3):(i * 3) + 2], base=16))
 
     # Takes binary data (as string of hexes) and converts it to an ascii string
     def convert(self, data):
