@@ -1,8 +1,9 @@
 import file_management
 import binary_conversion
 from PyQt5.QtGui import QKeySequence
-from PyQt5.QtWidgets import QMainWindow,QScrollArea, QGridLayout, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QShortcut, QPlainTextEdit, QPushButton, QFileDialog, QApplication
+from PyQt5.QtWidgets import QMainWindow, QScrollArea, QGridLayout, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QShortcut, QPlainTextEdit, QPushButton, QFileDialog, QApplication
 from PyQt5.QtCore import Qt, QSize
+
 
 class Window(QMainWindow):
 
@@ -67,7 +68,7 @@ class Window(QMainWindow):
         self.grid.addWidget(self.inText, 0, 0)
         self.grid.addWidget(self.outText, 0, 1)
 
-    def addConvertedRow(self,i):
+    def addConvertedRow(self, i):
         hb = QHBoxLayout()
         label = QLabel()
         text = self.binfile.get_read_file_name_by_index(i)
@@ -106,7 +107,6 @@ class Window(QMainWindow):
         self.scrollWidget.setLayout(self.myGrid)
         self.scrollArea.setWidget(self.scrollWidget)
         self.grid.addWidget(self.scrollArea, 0, 0)
-
 
     def step1Buttons(self):
         for i in reversed(range(self.gridTop.count())):
@@ -178,7 +178,7 @@ class Window(QMainWindow):
         self.scrollWidget.setFixedWidth(460)
         count = self.binfile.get_file_count()
         self.step3ButtonsAll()
-        
+
         self.scrollWidget.setLayout(self.myGrid)
         self.grid.addWidget(self.scrollArea, 0, 0)
 
@@ -186,12 +186,11 @@ class Window(QMainWindow):
         self.myGrid.addStretch()
         self.scrollArea.setWidget(self.scrollWidget)
 
-
-    def convertEachFile(self,count):
+    def convertEachFile(self, count):
         for i in range(count):
             text = self.binfile.get_read_file_content_by_index(i)
             text = ' '.join('{:02X}'.format(c) for c in text)
-            text =  text.encode('ascii').decode('unicode-escape')
+            text = text.encode('ascii').decode('unicode-escape')
             out = self.convertFromBinary(text)
             self.tableOfOuts.append(out)
             self.addConvertedRow(i)
