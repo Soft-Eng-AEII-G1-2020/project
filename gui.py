@@ -1,7 +1,8 @@
 import file_management
+import binary_conversion
 from PyQt5.QtGui import QKeySequence
-from PyQt5.QtWidgets import QMainWindow, QGridLayout, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QShortcut, QPlainTextEdit, QPushButton, QFileDialog, QApplication
-
+from PyQt5.QtWidgets import QMainWindow,QScrollArea, QGridLayout, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QShortcut, QPlainTextEdit, QPushButton, QFileDialog, QApplication
+from PyQt5.QtCore import Qt, QSize
 
 class Window(QMainWindow):
 
@@ -29,6 +30,7 @@ class Window(QMainWindow):
         self.setFixedHeight(500)
 
         self.binfile = file_management.BinFile()
+        self.binConverter = binary_conversion.BinConverter()
 
     def setMenu(self):
         self.menu = self.menuBar()
@@ -51,7 +53,7 @@ class Window(QMainWindow):
         self.gridTop.addWidget(self.btnMany, 0, 1)
         self.setTextareas()
 
-    def setTextareas(self):
+    def resetGrid(self):
         for i in reversed(range(self.grid.count())):
             if(self.grid.itemAt(i).widget()):
                 self.grid.itemAt(i).widget().setParent(None)
@@ -59,36 +61,41 @@ class Window(QMainWindow):
                 for j in reversed(range(self.grid.itemAt(i).layout().count())):
                     self.grid.itemAt(i).itemAt(j).widget().setParent(None)
                 self.grid.itemAt(i).layout().setParent(None)
+
+    def setTextareas(self):
+        self.resetGrid()
         self.grid.addWidget(self.inText, 0, 0)
         self.grid.addWidget(self.outText, 0, 1)
 
     def setItemList(self, count, isInFile):
-        for i in reversed(range(self.grid.count())):
-            if(self.grid.itemAt(i).widget()):
-                self.grid.itemAt(i).widget().setParent(None)
-            else:
-                for j in reversed(range(self.grid.itemAt(i).layout().count())):
-                    self.grid.itemAt(i).itemAt(j).widget().setParent(None)
-                self.grid.itemAt(i).layout().setParent(None)
+        self.resetGrid()
+        scrollArea = QScrollArea()
+        myGrid = QVBoxLayout()
+        scrollWidget = QWidget()
         for i in range(count):
-            hb = QHBoxLayout()
+            hb = QGridLayout()
             label = QLabel()
             text = self.binfile.get_read_file_name_by_index(i)
             label.setText(text)
-            hb.addWidget(label)
+            hb.addWidget(label, 0, 0, 1, 2)
 
             if(isInFile):
                 openMe = QPushButton("Open")
                 convMe = QPushButton("Convert")
                 openMe.clicked.connect(lambda: self.openAFileFromMany(i))
                 convMe.clicked.connect(lambda: self.convAFile(i))
-                hb.addWidget(openMe)
-                hb.addWidget(convMe)
+                hb.addWidget(openMe, 0, 2)
+                hb.addWidget(convMe, 0, 3)
             else:
                 saveMe = QPushButton("Save")
                 saveMe.clicked.connect(lambda: self.saveAFileFromMany(i))
-                hb.addWidget(saveMe)
-            self.grid.addLayout(hb, i, 0)
+                hb.addWidget(saveMe, 0, 2,1,2)
+            myGrid.addLayout(hb)
+        myGrid.addStretch()
+        scrollWidget.setLayout(myGrid)
+        scrollArea.setWidget(scrollWidget)
+        self.grid.addWidget(scrollArea, 0, 0)
+
 
     def step1Buttons(self):
         for i in reversed(range(self.gridTop.count())):
@@ -224,7 +231,7 @@ class Window(QMainWindow):
 
     def convertFromBinary(self, data):
 
-        return data
+        return self.binConverter.convert(data)
 
 
 app = QApplication([])
