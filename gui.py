@@ -3,7 +3,6 @@ import binary_conversion
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import QMainWindow,QScrollArea, QGridLayout, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QShortcut, QPlainTextEdit, QPushButton, QFileDialog, QApplication
 from PyQt5.QtCore import Qt, QSize
-from multiprocessing import Pool
 
 class Window(QMainWindow):
 
@@ -156,6 +155,7 @@ class Window(QMainWindow):
 
     def openAFileFromMany(self, i):
         text = self.binfile.get_read_file_content_by_index(i)
+        text
         text = ' '.join('{:02X}'.format(c) for c in text)
         self.inText.setPlainText(text)
         self.setTextareas()
@@ -179,20 +179,23 @@ class Window(QMainWindow):
         self.step3ButtonsAll()
         
         self.scrollWidget.setLayout(self.myGrid)
-        self.myGrid.addStretch()
         self.grid.addWidget(self.scrollArea, 0, 0)
 
+        self.functionTest(count)
+        self.scrollArea.setWidget(self.scrollWidget)
+
+
+    def functionTest(self,count):
         for i in range(count):
             self.convertEachFile(i)
-    
 
     def convertEachFile(self,i):
         text = self.binfile.get_read_file_content_by_index(i)
         text = ' '.join('{:02X}'.format(c) for c in text)
+        text =  text.encode('ascii').decode('unicode-escape')
         out = self.convertFromBinary(text)
         self.tableOfOuts.append(out)
         self.addConvertedRow(i)
-        self.scrollArea.setWidget(self.scrollWidget)
 
     def openAFile(self):
         fileName = QFileDialog.getOpenFileName(
@@ -240,7 +243,7 @@ class Window(QMainWindow):
         fileName = QFileDialog.getSaveFileName(
             self.w,
             "Select a name for your text files",
-            "",
+            "Select directory",
             "Text file (*.txt);; All files (*.*)"
         )
         if fileName[0]:

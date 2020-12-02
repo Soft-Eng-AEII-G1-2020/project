@@ -55,7 +55,7 @@ class BinFile:
         else:
             actualPath = os.path.split(
                 path)[0] + "/" + filename_override + ".txt"
-        file = open(actualPath, "w")
+        file = open(actualPath, "w", encoding="utf-8")
         file.write(content)
         file.close()
 
