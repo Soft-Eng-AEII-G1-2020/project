@@ -1,6 +1,8 @@
 import file_management
+import binary_conversion
 from PyQt5.QtGui import QKeySequence
-from PyQt5.QtWidgets import QMainWindow, QGridLayout, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QShortcut, QPlainTextEdit, QPushButton, QFileDialog, QApplication
+from PyQt5.QtWidgets import QMainWindow, QRadioButton, QScrollArea, QGridLayout, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QShortcut, QPlainTextEdit, QPushButton, QFileDialog, QApplication
+from PyQt5.QtCore import Qt, QSize
 
 
 class Window(QMainWindow):
@@ -13,7 +15,7 @@ class Window(QMainWindow):
         self.grid = QGridLayout()
         self.grid.setSpacing(10)
         self.setWindowTitle("Binary files converter")
-
+        self.binaryFileIsLinear = 1
         self.w = QWidget()
         self.vb = QVBoxLayout()
 
@@ -29,6 +31,7 @@ class Window(QMainWindow):
         self.setFixedHeight(500)
 
         self.binfile = file_management.BinFile()
+        self.binConverter = binary_conversion.BinConverter()
 
     def setMenu(self):
         self.menu = self.menuBar()
@@ -47,11 +50,18 @@ class Window(QMainWindow):
         self.btnConvert = QPushButton("Convert")
         self.btnConvertAll = QPushButton("Convert All")
         self.btnReset = QPushButton("Reset")
+        self.b1 = QRadioButton("Linear")
+        self.b2 = QRadioButton("Iterative")
         self.gridTop.addWidget(self.btnOne, 0, 0)
         self.gridTop.addWidget(self.btnMany, 0, 1)
+        self.gridTop.addWidget(self.b1, 1, 0)
+        self.gridTop.addWidget(self.b2, 1, 1)
         self.setTextareas()
 
-    def setTextareas(self):
+    def btnstate(self, b):
+        self.binaryFileIsLinear = b
+
+    def resetGrid(self):
         for i in reversed(range(self.grid.count())):
             if(self.grid.itemAt(i).widget()):
                 self.grid.itemAt(i).widget().setParent(None)
@@ -59,36 +69,51 @@ class Window(QMainWindow):
                 for j in reversed(range(self.grid.itemAt(i).layout().count())):
                     self.grid.itemAt(i).itemAt(j).widget().setParent(None)
                 self.grid.itemAt(i).layout().setParent(None)
+
+    def setTextareas(self):
+        self.resetGrid()
         self.grid.addWidget(self.inText, 0, 0)
         self.grid.addWidget(self.outText, 0, 1)
 
-    def setItemList(self, count, isInFile):
-        for i in reversed(range(self.grid.count())):
-            if(self.grid.itemAt(i).widget()):
-                self.grid.itemAt(i).widget().setParent(None)
-            else:
-                for j in reversed(range(self.grid.itemAt(i).layout().count())):
-                    self.grid.itemAt(i).itemAt(j).widget().setParent(None)
-                self.grid.itemAt(i).layout().setParent(None)
-        for i in range(count):
-            hb = QHBoxLayout()
-            label = QLabel()
-            text = self.binfile.get_read_file_name_by_index(i)
-            label.setText(text)
-            hb.addWidget(label)
+    def addConvertedRow(self, i):
+        hb = QHBoxLayout()
+        label = QLabel()
+        text = self.binfile.get_read_file_name_by_index(i)
+        label.setText(text)
+        label.setFixedWidth(260)
+        hb.addWidget(label)
+        saveMe = QPushButton("Save")
+        saveMe.clicked.connect(lambda: self.saveAFileFromMany(i))
+        hb.addWidget(saveMe)
+        self.myGrid.addLayout(hb)
 
+    def setItemList(self, count, isInFile):
+        self.resetGrid()
+        self.scrollArea = QScrollArea()
+        self.myGrid = QVBoxLayout()
+        self.scrollWidget = QWidget()
+        self.scrollWidget.setFixedWidth(460)
+        for i in range(count):
             if(isInFile):
+                hb = QHBoxLayout()
+                label = QLabel()
+                text = self.binfile.get_read_file_name_by_index(i)
+                label.setText(text)
+                label.setFixedWidth(260)
+                hb.addWidget(label)
                 openMe = QPushButton("Open")
                 convMe = QPushButton("Convert")
                 openMe.clicked.connect(lambda: self.openAFileFromMany(i))
                 convMe.clicked.connect(lambda: self.convAFile(i))
                 hb.addWidget(openMe)
                 hb.addWidget(convMe)
+                self.myGrid.addLayout(hb)
             else:
-                saveMe = QPushButton("Save")
-                saveMe.clicked.connect(lambda: self.saveAFileFromMany(i))
-                hb.addWidget(saveMe)
-            self.grid.addLayout(hb, i, 0)
+                self.addConvertedRow(i)
+        self.myGrid.addStretch()
+        self.scrollWidget.setLayout(self.myGrid)
+        self.scrollArea.setWidget(self.scrollWidget)
+        self.grid.addWidget(self.scrollArea, 0, 0)
 
     def step1Buttons(self):
         for i in reversed(range(self.gridTop.count())):
@@ -98,6 +123,8 @@ class Window(QMainWindow):
         self.setTextareas()
         self.gridTop.addWidget(self.btnOne, 0, 0)
         self.gridTop.addWidget(self.btnMany, 0, 1)
+        self.gridTop.addWidget(self.b1, 1, 0)
+        self.gridTop.addWidget(self.b2, 1, 1)
 
     def step2Buttons(self):
         for i in reversed(range(self.gridTop.count())):
@@ -131,6 +158,8 @@ class Window(QMainWindow):
         self.btnMany.clicked.connect(self.openManyFiles)
         self.btnSaveAll.clicked.connect(self.saveManyFiles)
         self.btnConvertAll.clicked.connect(self.startProcesingMany)
+        self.b1.toggled.connect(lambda: self.btnstate(1))
+        self.b2.toggled.connect(lambda: self.btnstate(0))
 
     def startProcesing(self):
         self.step3Buttons()
@@ -146,22 +175,36 @@ class Window(QMainWindow):
         self.step2Buttons()
 
     def convAFile(self, i):
-        self.openAFileFromMany(i)
+        text = self.binfile.get_read_file_content_by_index(i)
+        text = ' '.join('{:02X}'.format(c) for c in text)
+        self.inText.setPlainText(text)
+        self.setTextareas()
         self.startProcesing()
 
-    def saveAFileFromMany(self, i):
-        text = self.tableOfOuts[i]
-        self.outText.setPlainText(text)
-        self.saveAFile()
-
     def startProcesingMany(self):
+        self.resetGrid()
+        self.scrollArea = QScrollArea()
+        self.myGrid = QVBoxLayout()
+        self.scrollWidget = QWidget()
+        self.scrollWidget.setFixedWidth(460)
         count = self.binfile.get_file_count()
+        self.step3ButtonsAll()
+
+        self.scrollWidget.setLayout(self.myGrid)
+        self.grid.addWidget(self.scrollArea, 0, 0)
+
+        self.convertEachFile(count)
+        self.myGrid.addStretch()
+        self.scrollArea.setWidget(self.scrollWidget)
+
+    def convertEachFile(self, count):
         for i in range(count):
             text = self.binfile.get_read_file_content_by_index(i)
             text = ' '.join('{:02X}'.format(c) for c in text)
-            self.tableOfOuts.append(self.convertFromBinary(text))
-        self.setItemList(count, 0)
-        self.step3ButtonsAll()
+            text = text.encode('ascii').decode('unicode-escape')
+            out = self.convertFromBinary(text)
+            self.tableOfOuts.append(out)
+            self.addConvertedRow(i)
 
     def openAFile(self):
         fileName = QFileDialog.getOpenFileName(
@@ -187,6 +230,11 @@ class Window(QMainWindow):
             count = self.binfile.get_file_count()
             self.setItemList(count, 1)
 
+    def saveAFileFromMany(self, i):
+        text = self.tableOfOuts[i]
+        self.outText.setPlainText(text)
+        self.saveAFile()
+
     def saveAFile(self):
         fileName = QFileDialog.getSaveFileName(
             self.w,
@@ -194,7 +242,7 @@ class Window(QMainWindow):
             "",
             "Text file (*.txt);; All files (*.*)")
         if fileName[0]:
-            file = open(fileName[0], "w")
+            file = open(fileName[0], "w", encoding="utf-8")
             file.write(self.outText.toPlainText())
             file.close()
         self.binfile.reset()
@@ -209,7 +257,7 @@ class Window(QMainWindow):
         fileName = QFileDialog.getSaveFileName(
             self.w,
             "Select a name for your text files",
-            "",
+            "Find a directory",
             "Text file (*.txt);; All files (*.*)"
         )
         if fileName[0]:
@@ -223,8 +271,7 @@ class Window(QMainWindow):
             self.step1Buttons()
 
     def convertFromBinary(self, data):
-
-        return data
+        return self.binConverter.convert(data, self.binaryFileIsLinear)
 
 
 if __name__ == "__main__":
