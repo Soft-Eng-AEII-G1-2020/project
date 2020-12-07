@@ -17,7 +17,7 @@ class BinConverter:
                 chr(int(data[(i * 3):(i * 3) + 2], base=16))
 
     # Takes binary data (as string of hexes) and converts it to an ascii string
-    def convert(self, data, isLinear):
+    def convert(self, data, isLinear=True):
         if(isLinear):
             self.__prepare_input_data(data)
             self.__process_data(data)
