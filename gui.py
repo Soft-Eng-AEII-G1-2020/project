@@ -1,7 +1,7 @@
 import file_management
 import binary_conversion
 from PyQt5.QtGui import QKeySequence
-from PyQt5.QtWidgets import QMainWindow, QScrollArea, QGridLayout, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QShortcut, QPlainTextEdit, QPushButton, QFileDialog, QApplication
+from PyQt5.QtWidgets import QMainWindow,QRadioButton, QScrollArea, QGridLayout, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QShortcut, QPlainTextEdit, QPushButton, QFileDialog, QApplication
 from PyQt5.QtCore import Qt, QSize
 
 
@@ -15,7 +15,7 @@ class Window(QMainWindow):
         self.grid = QGridLayout()
         self.grid.setSpacing(10)
         self.setWindowTitle("Binary files converter")
-
+        self.binaryFileIsLinear = 1
         self.w = QWidget()
         self.vb = QVBoxLayout()
 
@@ -50,9 +50,16 @@ class Window(QMainWindow):
         self.btnConvert = QPushButton("Convert")
         self.btnConvertAll = QPushButton("Convert All")
         self.btnReset = QPushButton("Reset")
+        self.b1 = QRadioButton("Linear")
+        self.b2 = QRadioButton("Iterative")
         self.gridTop.addWidget(self.btnOne, 0, 0)
         self.gridTop.addWidget(self.btnMany, 0, 1)
+        self.gridTop.addWidget(self.b1, 1, 0)
+        self.gridTop.addWidget(self.b2, 1, 1)
         self.setTextareas()
+		
+    def btnstate(self,b):
+       self.binaryFileIsLinear = b
 
     def resetGrid(self):
         for i in reversed(range(self.grid.count())):
@@ -116,6 +123,8 @@ class Window(QMainWindow):
         self.setTextareas()
         self.gridTop.addWidget(self.btnOne, 0, 0)
         self.gridTop.addWidget(self.btnMany, 0, 1)
+        self.gridTop.addWidget(self.b1, 1, 0)
+        self.gridTop.addWidget(self.b2, 1, 1)
 
     def step2Buttons(self):
         for i in reversed(range(self.gridTop.count())):
@@ -149,6 +158,8 @@ class Window(QMainWindow):
         self.btnMany.clicked.connect(self.openManyFiles)
         self.btnSaveAll.clicked.connect(self.saveManyFiles)
         self.btnConvertAll.clicked.connect(self.startProcesingMany)
+        self.b1.toggled.connect(lambda:self.btnstate(1))
+        self.b2.toggled.connect(lambda:self.btnstate(0))
 
     def startProcesing(self):
         self.step3Buttons()
@@ -260,8 +271,7 @@ class Window(QMainWindow):
             self.step1Buttons()
 
     def convertFromBinary(self, data):
-
-        return self.binConverter.convert(data)
+        return self.binConverter.convert(data,self.binaryFileIsLinear)
 
 
 app = QApplication([])
