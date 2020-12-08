@@ -5,6 +5,9 @@ import shutil
 
 F_NAME1 = 'fontawesome-webfont'
 F_NAME2 = 'OpenSans-Regular'
+F_NAME3 = '00001'
+F_NAME4 = '00002'
+F_NAME5 = 'taiyo_sirius_R00001.fits'
 F_NAMEOUT = 'test-out'
 ROOTDIR = './exemplaryFiles/'
 EXTENSION = '.bin'
@@ -19,6 +22,7 @@ test data test data test data
 test data test data test data
 test data test data test data
 '''
+TESTDATANEWLINE = '\nAAAA\n\t\t'
 
 
 def test_load_file():
@@ -38,15 +42,15 @@ def test_load_folder():
 
     bf.load_folder(ROOTDIR)
 
-    assert len(bf.readList) == 2
+    assert len(bf.readList) == 5
 
-    matrix = sorted([F_NAME1, F_NAME2])
+    matrix = sorted([F_NAME1, F_NAME2, F_NAME3, F_NAME4, F_NAME5])
 
     for i in range(0, 2):
         assert bf.readList[i][2] == matrix[i] + EXTENSION
         assert bf.readList[i][0] == matrix[i]
 
-    assert len(bf.readList) == bf.get_file_count() == 2
+    assert len(bf.readList) == bf.get_file_count() == 5
 
 
 def is_single_file_test():
@@ -85,5 +89,12 @@ def test_saving():
         data = f.read()
 
         assert data == TESTDATA
+
+    bf.save_file_by_index(TESTOUT, 0, TESTDATANEWLINE, F_NAMEOUT)
+
+    with open(TESTOUT + F_NAMEOUT + '.txt') as f:
+        data = f.read()
+
+        assert data == TESTDATANEWLINE
 
     shutil.rmtree(TESTOUT, ignore_errors=True)
