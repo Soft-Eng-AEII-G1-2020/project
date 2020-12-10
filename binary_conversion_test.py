@@ -12,6 +12,7 @@ ASCII = r'# Byte-compiled'
 
 FILEPATH = './exemplaryFiles/OpenSans-Regular.bin'
 
+
 def test_convert():
     conv = bc.BinConverter()
 
@@ -24,6 +25,7 @@ def test_convert():
 
         with pytest.raises(ValueError, match='.*2.*'):
             data = conv.convert(IMPROPER_DATA, i)
+
 
 def test_time():
     conv = bc.BinConverter()
