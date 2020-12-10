@@ -13,22 +13,26 @@ class BinConverter:
     # Converts input binary data to output text (byte-by-byte)
     def __process_to_ascii(self, data):
         for byte in range(self.byte_count):
-            self.text_output = self.text_output + chr(int(data[(byte*9):(byte*9+8)], base=2))
+            self.text_output = self.text_output + \
+                chr(int(data[(byte * 9):(byte * 9 + 8)], base=2))
 
     # Converts input binary data to hexadecimal form (byte-by-byte)
     def __process_to_hex(self, data):
         for byte in range(self.byte_count):
-            self.text_output = self.text_output + ("%0.2X" % int(data[(byte*9):(byte*9+8)], base=2)) + " "
-    
+            self.text_output = self.text_output + \
+                ("%0.2X" % int(data[(byte * 9):(byte * 9 + 8)], base=2)) + " "
+
     # Converts input binary data to decimal form (byte-by-byte)
     def __process_to_decimal(self, data):
         for byte in range(self.byte_count):
-            self.text_output = self.text_output + ("%0.3d" % int(data[(byte*9):(byte*9+8)], base=2)) + " "
-    
+            self.text_output = self.text_output + \
+                ("%0.3d" % int(data[(byte * 9):(byte * 9 + 8)], base=2)) + " "
+
     # Converts input binary data to octal form (byte-by-byte)
     def __process_to_octal(self, data):
         for byte in range(self.byte_count):
-            self.text_output = self.text_output + ("%0.3o" % int(data[(byte*9):(byte*9+8)], base=2)) + " "
+            self.text_output = self.text_output + \
+                ("%0.3o" % int(data[(byte * 9):(byte * 9 + 8)], base=2)) + " "
 
     # Takes binary data (as string of hexes) and converts it to an ascii string
     def convert(self, data, toFormat):
