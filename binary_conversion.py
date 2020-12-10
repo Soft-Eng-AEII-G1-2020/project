@@ -7,20 +7,38 @@ class BinConverter:
 
     # Splits the supplied string into byte-long chunks
     def __prepare_input_data(self, data):
-        self.byte_count = round(len(data) / 3)
-
-    # Converts input binary data to output text
-    def __process_data(self, data):
         self.text_output = ""
-        for i in range(self.byte_count):
-            self.text_output = self.text_output + \
-                chr(int(data[(i * 3):(i * 3) + 2], base=16))
+        self.byte_count = round(len(data) / 9)
+
+    # Converts input binary data to output text (byte-by-byte)
+    def __process_to_ascii(self, data):
+        for byte in range(self.byte_count):
+            self.text_output = self.text_output + chr(int(data[(byte*9):(byte*9+8)], base=2))
+
+    # Converts input binary data to hexadecimal form (byte-by-byte)
+    def __process_to_hex(self, data):
+        for byte in range(self.byte_count):
+            self.text_output = self.text_output + ("%0.2X" % int(data[(byte*9):(byte*9+8)], base=2)) + " "
+    
+    # Converts input binary data to decimal form (byte-by-byte)
+    def __process_to_decimal(self, data):
+        for byte in range(self.byte_count):
+            self.text_output = self.text_output + ("%0.3d" % int(data[(byte*9):(byte*9+8)], base=2)) + " "
+    
+    # Converts input binary data to octal form (byte-by-byte)
+    def __process_to_octal(self, data):
+        for byte in range(self.byte_count):
+            self.text_output = self.text_output + ("%0.3o" % int(data[(byte*9):(byte*9+8)], base=2)) + " "
 
     # Takes binary data (as string of hexes) and converts it to an ascii string
-    def convert(self, data, isLinear=True):
-        if(isLinear):
-            self.__prepare_input_data(data)
-            self.__process_data(data)
-        else:
-            self.text_output = "Not Supported Yet"
+    def convert(self, data, toFormat):
+        self.__prepare_input_data(data)
+        if(toFormat == 0):
+            self.__process_to_ascii(data)
+        if(toFormat == 1):
+            self.__process_to_hex(data)
+        if(toFormat == 2):
+            self.__process_to_decimal(data)
+        if(toFormat == 3):
+            self.__process_to_octal(data)
         return self.text_output
