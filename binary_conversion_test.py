@@ -17,7 +17,7 @@ def test_convert():
 
     out = [ASCII, HEX, DEC, OCT]
 
-    for i in range(0,4):
+    for i in range(0, 4):
         data = conv.convert(PROPER_DATA, i)
 
         assert data == out[i]
