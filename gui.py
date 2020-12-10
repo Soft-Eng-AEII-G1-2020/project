@@ -15,7 +15,7 @@ class Window(QMainWindow):
         self.grid = QGridLayout()
         self.grid.setSpacing(10)
         self.setWindowTitle("Binary files converter")
-        self.binaryFileIsLinear = 1
+        self.convertType = 1
         self.w = QWidget()
         self.vb = QVBoxLayout()
 
@@ -50,16 +50,21 @@ class Window(QMainWindow):
         self.btnConvert = QPushButton("Convert")
         self.btnConvertAll = QPushButton("Convert All")
         self.btnReset = QPushButton("Reset")
-        self.b1 = QRadioButton("Linear")
-        self.b2 = QRadioButton("Iterative")
-        self.gridTop.addWidget(self.btnOne, 0, 0)
-        self.gridTop.addWidget(self.btnMany, 0, 1)
-        self.gridTop.addWidget(self.b1, 1, 0)
-        self.gridTop.addWidget(self.b2, 1, 1)
+        self.b1 = QRadioButton("to ASCII")
+        self.b2 = QRadioButton("to HEX")
+        self.b3 = QRadioButton("to DECIMAL")
+        self.b4 = QRadioButton("to OCTAL")
+        self.b2.setChecked(True)
+        self.gridTop.addWidget(self.btnOne, 0, 0, 1, 2)
+        self.gridTop.addWidget(self.btnMany, 0, 2, 1, 2)
+        self.gridTop.addWidget(self.b1, 1, 0, 1, 1)
+        self.gridTop.addWidget(self.b2, 1, 1, 1, 1)
+        self.gridTop.addWidget(self.b3, 1, 2, 1, 1)
+        self.gridTop.addWidget(self.b4, 1, 3, 1, 1)
         self.setTextareas()
 
     def btnstate(self, b):
-        self.binaryFileIsLinear = b
+        self.convertType = b
 
     def resetGrid(self):
         for i in reversed(range(self.grid.count())):
@@ -121,22 +126,32 @@ class Window(QMainWindow):
         self.inText.setPlainText("")
         self.outText.setPlainText("")
         self.setTextareas()
-        self.gridTop.addWidget(self.btnOne, 0, 0)
-        self.gridTop.addWidget(self.btnMany, 0, 1)
+        self.gridTop.addWidget(self.btnOne, 0, 0, 1, 2)
+        self.gridTop.addWidget(self.btnMany, 0, 2, 1, 2)
         self.gridTop.addWidget(self.b1, 1, 0)
         self.gridTop.addWidget(self.b2, 1, 1)
+        self.gridTop.addWidget(self.b3, 1, 2, 1, 1)
+        self.gridTop.addWidget(self.b4, 1, 3, 1, 1)
 
     def step2Buttons(self):
         for i in reversed(range(self.gridTop.count())):
             self.gridTop.itemAt(i).widget().setParent(None)
-        self.gridTop.addWidget(self.btnReset, 0, 0)
-        self.gridTop.addWidget(self.btnConvert, 0, 1)
+        self.gridTop.addWidget(self.btnReset, 0, 0, 1, 2)
+        self.gridTop.addWidget(self.btnConvert, 0, 2, 1, 2)
+        self.gridTop.addWidget(self.b1, 1, 0, 1, 1)
+        self.gridTop.addWidget(self.b2, 1, 1, 1, 1)
+        self.gridTop.addWidget(self.b3, 1, 2, 1, 1)
+        self.gridTop.addWidget(self.b4, 1, 3, 1, 1)
 
     def step2ButtonsMany(self):
         for i in reversed(range(self.gridTop.count())):
             self.gridTop.itemAt(i).widget().setParent(None)
-        self.gridTop.addWidget(self.btnReset, 0, 0)
-        self.gridTop.addWidget(self.btnConvertAll, 0, 1)
+        self.gridTop.addWidget(self.btnReset, 0, 0, 1, 2)
+        self.gridTop.addWidget(self.btnConvertAll, 0, 2, 1, 2)
+        self.gridTop.addWidget(self.b1, 1, 0, 1, 1)
+        self.gridTop.addWidget(self.b2, 1, 1, 1, 1)
+        self.gridTop.addWidget(self.b3, 1, 2, 1, 1)
+        self.gridTop.addWidget(self.b4, 1, 3, 1, 1)
 
     def step3Buttons(self):
         for i in reversed(range(self.gridTop.count())):
@@ -158,8 +173,10 @@ class Window(QMainWindow):
         self.btnMany.clicked.connect(self.openManyFiles)
         self.btnSaveAll.clicked.connect(self.saveManyFiles)
         self.btnConvertAll.clicked.connect(self.startProcesingMany)
-        self.b1.toggled.connect(lambda: self.btnstate(1))
-        self.b2.toggled.connect(lambda: self.btnstate(0))
+        self.b1.toggled.connect(lambda: self.btnstate(0))
+        self.b2.toggled.connect(lambda: self.btnstate(1))
+        self.b3.toggled.connect(lambda: self.btnstate(2))
+        self.b4.toggled.connect(lambda: self.btnstate(3))
 
     def startProcesing(self):
         self.step3Buttons()
@@ -169,14 +186,14 @@ class Window(QMainWindow):
 
     def openAFileFromMany(self, i):
         text = self.binfile.get_read_file_content_by_index(i)
-        text = ' '.join('{:02X}'.format(c) for c in text)
+        text = ' '.join('{:08b}'.format(c) for c in text)
         self.inText.setPlainText(text)
         self.setTextareas()
         self.step2Buttons()
 
     def convAFile(self, i):
         text = self.binfile.get_read_file_content_by_index(i)
-        text = ' '.join('{:02X}'.format(c) for c in text)
+        text = ' '.join('{:08b}'.format(c) for c in text)
         self.inText.setPlainText(text)
         self.setTextareas()
         self.startProcesing()
@@ -200,7 +217,7 @@ class Window(QMainWindow):
     def convertEachFile(self, count):
         for i in range(count):
             text = self.binfile.get_read_file_content_by_index(i)
-            text = ' '.join('{:02X}'.format(c) for c in text)
+            text = ' '.join('{:08b}'.format(c) for c in text)
             text = text.encode('ascii').decode('unicode-escape')
             out = self.convertFromBinary(text)
             self.tableOfOuts.append(out)
@@ -215,7 +232,7 @@ class Window(QMainWindow):
         if fileName[0] != "":
             self.binfile.load_file(fileName[0])
             data = self.binfile.get_read_file_content_by_index(0)
-            stringFromData = ' '.join('{:02X}'.format(c) for c in data)
+            stringFromData = ' '.join('{:08b}'.format(c) for c in data)
             self.inText.setPlainText(stringFromData)
             self.step2Buttons()
 
@@ -271,4 +288,5 @@ class Window(QMainWindow):
             self.step1Buttons()
 
     def convertFromBinary(self, data):
-        return self.binConverter.convert(data, self.binaryFileIsLinear)
+        # 0 - ASCII, 1 - HEX, 2 - DECIMAL, 3 - OCTAL
+        return self.binConverter.convert(data, self.convertType)
